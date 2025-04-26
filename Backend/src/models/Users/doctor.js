@@ -1,0 +1,60 @@
+import mongoose from 'mongoose';
+const docorSchema= new mongoose.Schema({
+    name:{
+        type:String,
+        required:true,
+    },
+    email:{
+        type:String,
+        required:true,
+        unique:true,
+    },
+    password:{
+        type:String,
+        required:true,
+    },
+    phone:{
+        type:String,
+        required:true,
+    },
+    country:{
+        type:String,
+        enum:['USA','CAN']
+    },
+    state:{
+        type:String,
+        required:true,
+    },
+    city:{
+        type:String,
+        required:true,
+    },
+    street:{
+        type:String,
+        required:true,
+    },
+    pincode:{
+        type:String,
+        required:true,
+    },
+    flatno:{
+        type:String,
+        required:true,
+    },
+    role:{
+        type:String,
+        enum:['doctor','receptionist','patient','nurse','admin'],
+    },
+    specialization:{
+        type:String,
+        required:true,
+    },
+    experience:{
+        type:Number,
+        required:true,
+    },
+},
+{
+    timestamps:true,
+})
+export const Doctor = mongoose.model('Doctor', docorSchema);

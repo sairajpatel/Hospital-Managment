@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 const adminSchema = new mongoose.Schema({
     name:{
         type:String,
@@ -17,12 +17,9 @@ const adminSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    address:{
-        type:Schema.Types.ObjectId,
-        ref:Address,
-    },
     role:{
         type:String,
         enum:['doctor','receptionist','patient','nurse','admin'],
     }
 });
+module.exports = mongoose.model('Admin', adminSchema);

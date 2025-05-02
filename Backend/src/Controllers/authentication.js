@@ -26,19 +26,24 @@ module.exports.LoginAdmin=async(req,res)=>{
       const isMatch= await bcrypt.compare(password,findAdmin.password)
       if(!isMatch){
         req.flash('error', 'Incorrect password');
+        res.json({error:'Incorrect password'});
+
       // return res.redirect('/admin/login');
       }
-      const payload = { id: findAdmin._id, role: findAdmin.role };
-      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
-      req.session.token = token;
-      req.flash("success",`welcome ${findAdmin.name}`);
-      //uncomment below code after creating admin dashboard.
-    //   res.redirect('admin/dashboard');
-        res.json("Login successfull")
+      else{
+        const payload = { id: findAdmin._id, role: findAdmin.role };
+        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+        req.session.token = token;
+        req.flash("success",`welcome ${findAdmin.name}`);
+        //uncomment below code after creating admin dashboard.
+      //   res.redirect('admin/dashboard');
+          res.json({message:"Login successfull"});
+      }
+      
     }
     catch{
         req.flash('error','Something went wrong');
-        res.redirect('/admin/login');
+        // res.redirect('/admin/login');
     }
 
 
@@ -53,7 +58,7 @@ module.exports.LogoutAdmin=async (req,res)=>{
           if (err) {
             console.error('Error destroying session:', err);
             req.flash('error', 'Could not log out, please try again.');
-            return res.redirect('/admin/dashboard');
+            // return res.redirect('/admin/dashboard');
           }
           //uncomment below code after creation of login page
          

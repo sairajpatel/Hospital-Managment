@@ -1,8 +1,8 @@
 const express=require('express');
 const route=express.Router();
 const {body}=require('express-validator');
-const {LoginAdmin}=require('../Controllers/authentication');
-const {LogoutAdmin}=require('../Controllers/authentication');
+const {LoginAdmin,LogoutAdmin}=require('../Controllers/authentication');
+
 
 route.get('/', (req, res) => {
     // add it after admin login page creation.add it after admin login page creation.

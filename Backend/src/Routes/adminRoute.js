@@ -1,7 +1,8 @@
 const express=require('express');
 const route=express.Router();
 const {body}=require('express-validator');
-const {LoginAdmin,LogoutAdmin}=require('../Controllers/authentication');
+const authMiddleware=require('../Middlewares/authentication');
+const {LoginAdmin,LogoutAdmin,getAdminProfile}=require('../Controllers/authentication');
 
 
 route.get('/', (req, res) => {
@@ -17,4 +18,5 @@ route.get("/login", (req, res) => {
     // res.render('/login')
   });
 route.get("/logout",LogoutAdmin);
+route.get("/profile",authMiddleware.authAdmin,getAdminProfile);
 module.exports=route;

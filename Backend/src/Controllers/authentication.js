@@ -3,7 +3,7 @@ const jwt=require('jsonwebtoken');
 const admin = require('../models/Users/admin.js');
 const JWT_SECRET=process.env.JWT_SECRET;
 const {validationResult}=require('express-validator');
-
+const blacklist=require('../models/blacklistToken');
 module.exports.LoginAdmin=async(req,res)=>{
     try{
         const errors=validationResult(req);
@@ -32,7 +32,7 @@ module.exports.LoginAdmin=async(req,res)=>{
       // return res.redirect('/admin/login');
       }
       else{
-        const payload = { id: findAdmin._id, role: findAdmin.role };
+        const payload = {_id: findAdmin._id, role: findAdmin.role };
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
         res.cookie('token',token);
         req.flash("success",`welcome ${findAdmin.name}`);
@@ -51,6 +51,8 @@ module.exports.LoginAdmin=async(req,res)=>{
 }
 module.exports.LogoutAdmin=async (req,res)=>{
     try {
+       const token=req.cookies.token|| req.headers.authorization?.split(' ')[1];
+       await blacklist.create({token});
        
         req.flash('success', 'Successfully logged out');
     
@@ -64,4 +66,7 @@ module.exports.LogoutAdmin=async (req,res)=>{
         console.error('Logout error:', err);
         res.redirect('/admin/login');
       }
+}
+module.exports.getAdminProfile=async(req,res)=>{
+  res.status(200).json(req.admin);
 }

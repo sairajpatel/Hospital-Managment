@@ -32,13 +32,13 @@ module.exports.LoginAdmin=async(req,res)=>{
       // return res.redirect('/admin/login');
       }
       else{
-        const payload = {_id: findAdmin._id, role: findAdmin.role };
+        const payload = {_id: findAdmin._id, role: findAdmin.role,name:findAdmin.role };
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
         res.cookie('token',token);
         req.flash("success",`welcome ${findAdmin.name}`);
         //uncomment below code after creating admin dashboard.
       //   res.redirect('admin/dashboard');
-          res.json({token,findAdmin});
+          return res.status(200).json({token,findAdmin});
       }
       
     }

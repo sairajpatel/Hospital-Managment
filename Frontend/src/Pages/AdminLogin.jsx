@@ -7,7 +7,7 @@ import { loginSuccess } from "../redux/slices/authSlice";
 function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [erroror, seterroror] = useState("");
 
 
   const dispatch = useDispatch();
@@ -18,28 +18,29 @@ function AdminLogin() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    setError("");
+    seterroror("");
 
     try {
-      const res = await axios.post(
+      const response= await axios.post(
         `${import.meta.env.VITE_BASE_URL}/admin/login`,
         { email, password },
         { withCredentials: true }
       );
 
-      if (res.status === 200) {
+      if (response.status === 200) {
      
-        dispatch(loginSuccess(res.data.findAdmin));
+        dispatch(loginSuccess(response.data.findAdmin));
         navigate("/admin-dashboard", { replace: true });
      
       }
-    } catch (err) {
-      if (err.response?.data?.errors) {
-        setError(err.response.data.errors[0]?.msg);
-      } else if (err.response?.data?.message) {
-        setError(err.response.data.message);
+    } catch (error) {
+      console.log(error.response)
+      if (error.response?.data?.errors) {
+        seterroror(error.response.data.errors[0]?.msg);
+      } else if (error.response?.data?.message) {
+        seterroror(error.response.data.message);
       } else {
-        setError("Login failed. Please try again!");
+        seterroror("Login failed. Please try again!");
       }
     }
 
@@ -48,17 +49,17 @@ function AdminLogin() {
   };
 
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen">
       <h5 className="text-left text-2xl p-5 font-bold">Admin Login</h5>
       <img
-        className="h-1/2 w-full object-cover mb-4 border rounded-xl"
-        src="https://media.istockphoto.com/id/1476261444/photo/young-pharmaceutic-seller-explaining-something-to-doctor-in-hospital.jpg"
+        className="h-1/2 w-full object-cover mb-4 border"
+        src="https://media.istockphoto.com/id/1476261444/photo/young-pharmaceutic-seller-explaining-something-to-doctor-in-hospital.jpg?s=612x612&w=0&k=20&c=pEJ7PefqTUcR5hPhB3jLIvAUOzPA6FVPlw391Oxqnrw="
         alt="Login"
       />
       <div className="bg-[#eee] h-1/2 w-full rounded-2xl p-10 ">
         <form onSubmit={submitHandler}>
-          {error && (
-            <p className="bg-red-100 text-red-700 p-2 rounded mb-4">{error}</p>
+          {erroror && (
+            <p className="bg-red-100 text-red-700 p-2 rounded mb-4">{erroror}</p>
           )}
           <input
             onChange={(e) => setEmail(e.target.value)}

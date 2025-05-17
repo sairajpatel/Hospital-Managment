@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-const docorSchema= new mongoose.Schema({
+const mongoose=require('mongoose');
+const doctorSchema= new mongoose.Schema({
     name:{
         type:String,
         required:true,
@@ -57,4 +57,4 @@ const docorSchema= new mongoose.Schema({
 {
     timestamps:true,
 })
-export const Doctor = mongoose.model('Doctor', docorSchema);
+module.exports = mongoose.model('Doctor', doctorSchema);

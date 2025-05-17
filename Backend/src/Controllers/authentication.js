@@ -7,16 +7,11 @@ const blacklist=require('../models/blacklistToken');
 module.exports.LoginAdmin=async(req,res)=>{
     try{
         const errors=validationResult(req);
-        if(!errors.isEmpty()){
-            const errorMessages=errors.array().map(error=>error.msg);
-            req.flash('error',errorMessages.join(', '));
-            return res.json({error:errorMessages});
-            //add below code after creating admin login page.
-            // return res.redirect('/admin/login')
-           
-        }
+      if(!errors.isEmpty()){
+    return res.status(400).json({errors:errors.array()});
+  }
         
-        let {email,password}=req.body;
+        let {email,password  }=req.body;
         let findAdmin=await admin.findOne({email});
         if(!findAdmin){
           req.flash('error', 'Admin not found');

@@ -8,6 +8,7 @@ const flash=require('connect-flash');
 const connectDB = require('./src/db/index.js');
 const cookieParser=require('cookie-parser');
 const admin=require('./src/Routes/adminRoute.js');
+const doctor=require('./src/Routes/doctorRoute.js')
 app.use(express.urlencoded({ extended: true })); // for form data (HTML forms)
 app.use(express.json()); // for JSON data (like from Postman)
 app.use(cookieParser());
@@ -28,7 +29,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/admin', admin); 
-
+app.use('/doctor',doctor);
 
   
 app.listen(process.env.PORT, () => {

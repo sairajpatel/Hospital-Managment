@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
@@ -10,11 +11,16 @@ import AdminDashboard from './Pages/AdminDashboard';
 import AddDoctor from './Pages/AddDoctor';
 import AdminProtectWrapper from './Components/Protectiowrapper/AdminProtectWrapper';
 >>>>>>> Stashed changes
+=======
+import { Routes, Route } from 'react-router-dom';
+import AdminLogin from './Pages/AdminLogin';
+import AdminDashboard from './Pages/AdminDashboard';
+import AdminProtectWrapper from './Components/Protectiowrapper/AdminProtectWrapper';
+>>>>>>> 131372a578ec1469af2e2854c10c1cfa9b779c80
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     <>
       <div>
@@ -69,3 +75,21 @@ export default App
 
 export default App;
 >>>>>>> Stashed changes
+=======
+    <Routes>
+      <Route path="/admin-login" element={<AdminLogin />} />
+      <Route
+        path="/admin-dashboard"
+        element={
+          <AdminProtectWrapper>
+            <AdminDashboard />
+          </AdminProtectWrapper>
+        }
+      />
+    </Routes>
+  );
+}
+
+
+export default App;
+>>>>>>> 131372a578ec1469af2e2854c10c1cfa9b779c80

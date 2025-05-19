@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Logout from '../Components/Logout';
 
 function AdminDashboard() {
   const user = useSelector((state) => state.auth.user);
@@ -40,7 +41,13 @@ function AdminDashboard() {
       </aside>
 
       {/* Main Content */}
+     
       <main className="flex-1 p-6">
+        <div className="flex justify-end mb-4">
+  <Logout />
+</div>
+         
+       
         <h1 className="text-3xl font-bold text-gray-800 mb-6">
           Welcome, {user?.name || 'Admin'} 👋
         </h1>

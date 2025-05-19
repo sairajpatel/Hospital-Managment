@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function AdminDashboard() {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
+
+  const [totalDoctors, setTotalDoctors] = useState(0);
+
+  useEffect(() => {
+    const fetchDoctorCount = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/doctor/total-doctor`, {
+          withCredentials: true
+        });
+        setTotalDoctors(res.data.totaldoctor || 0);
+      } catch (err) {
+        console.error("Failed to fetch doctor count:", err);
+      }
+    };
+
+    fetchDoctorCount();
+  }, []);
 
   return (
     <div className="min-h-screen flex bg-gray-100">
@@ -30,12 +48,11 @@ function AdminDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card
             title="Doctors"
-            value="42"
+            value={totalDoctors}
             buttonText="Add Doctor"
             onClick={() => navigate('/admin/add-doctor')}
             color="text-blue-600"
           />
-
           <Card
             title="Nurses"
             value="27"
@@ -43,7 +60,6 @@ function AdminDashboard() {
             onClick={() => navigate('/admin/add-nurse')}
             color="text-green-600"
           />
-
           <Card
             title="Receptionists"
             value="5"
@@ -51,18 +67,8 @@ function AdminDashboard() {
             onClick={() => navigate('/admin/add-receptionist')}
             color="text-purple-600"
           />
-
-          <Card
-            title="Patients"
-            value="314"
-            color="text-pink-600"
-          />
-
-          <Card
-            title="Appointments Today"
-            value="8"
-            color="text-yellow-600"
-          />
+          <Card title="Patients" value="314" color="text-pink-600" />
+          <Card title="Appointments Today" value="8" color="text-yellow-600" />
         </div>
       </main>
     </div>

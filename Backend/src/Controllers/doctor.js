@@ -60,7 +60,7 @@ module.exports.loginDoctor=async(req,res)=>{
             return res.status(400).json({"message":"Invalid email or password"});
             
         }
-        const payload={_id:findDoctor.id,role:findDoctor.role,name:findDoctor.role};
+        const payload={_id:findDoctor.id,role:findDoctor.role,name:findDoctor.firstname};
         const token=jwt.sign(payload,JWT_SECRET,{expiresIn:'1h'});
         res.cookie('token',token);
         return res.status(200).json({"message":"successfully login"});
@@ -90,4 +90,6 @@ module.exports.totaldoctor = async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 };
-
+module.exports.doctorProfile=async(req,res)=>{
+   await res.status(200).json(req.doctor);
+}

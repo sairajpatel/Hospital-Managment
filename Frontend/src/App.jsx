@@ -1,12 +1,21 @@
+<<<<<<< Updated upstream
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+=======
+import { Routes, Route } from 'react-router-dom';
+import AdminLogin from './Pages/AdminLogin';
+import AdminDashboard from './Pages/AdminDashboard';
+import AddDoctor from './Pages/AddDoctor';
+import AdminProtectWrapper from './Components/Protectiowrapper/AdminProtectWrapper';
+>>>>>>> Stashed changes
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
+<<<<<<< Updated upstream
     <>
       <div>
         <a href="https://vite.dev" target="_blank">
@@ -33,3 +42,30 @@ function App() {
 }
 
 export default App
+=======
+    <Routes>
+      <Route path="/admin-login" element={<AdminLogin />} />
+      
+      <Route
+        path="/admin-dashboard"
+        element={
+          <AdminProtectWrapper>
+            <AdminDashboard />
+          </AdminProtectWrapper>
+        }
+      />
+
+      <Route
+        path="/admin/add-doctor"
+        element={
+          <AdminProtectWrapper>
+            <AddDoctor />
+          </AdminProtectWrapper>
+        }
+      />
+    </Routes>
+  );
+}
+
+export default App;
+>>>>>>> Stashed changes

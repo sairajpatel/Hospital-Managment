@@ -1,0 +1,64 @@
+const mongoose=require('mongoose');
+const doctorSchema= new mongoose.Schema({
+    firstname:{
+        type:String,
+        required:true,
+    },
+    lastname:{
+        type:String,
+        required:true,
+    },
+    email:{
+        type:String,
+        required:true,
+        unique:true,
+    },
+    password:{
+        type:String,
+        required:true,
+    },
+    phone:{
+        type:String,
+        required:true,
+    },
+    country:{
+        type:String,
+        enum:['USA','CAN']
+    },
+    state:{
+        type:String,
+        required:true,
+    },
+    city:{
+        type:String,
+        required:true,
+    },
+    street:{
+        type:String,
+        required:true,
+    },
+    pincode:{
+        type:String,
+        required:true,
+    },
+    flatno:{
+        type:String,
+        required:true,
+    },
+    role:{
+        type:String,
+        enum:['doctor','receptionist','patient','nurse','admin'],
+    },
+    specialization:{
+        type:String,
+        required:true,
+    },
+    experience:{
+        type:Number,
+        required:true,
+    },
+},
+{
+    timestamps:true,
+})
+module.exports = mongoose.model('Doctor', doctorSchema);

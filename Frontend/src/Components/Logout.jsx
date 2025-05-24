@@ -15,7 +15,7 @@ function Logout() {
 
        )
         dispatch(logout());
-        navigate('/admin-login');
+      
         }
         catch(err){
        console.log(err)

@@ -7,6 +7,7 @@ import AddDoctor from './Pages/AddDoctor';
 import DoctorLogin from './Pages/DoctorLogin';
 import DoctorProtectWrapper from './Components/Protectiowrapper/DoctorProtectWrapper';
 import DoctorDashboard from './Pages/DoctorDashboard';
+import AddReceptionist from './Pages/AddReceptionist';
 
 function App() {
  
@@ -23,7 +24,12 @@ return(
           </AdminProtectWrapper>
         }
       />
-
+     <Route
+     path="/admin/add-receptionist"
+     element={
+      <AddReceptionist/>
+     }
+     />
       <Route
         path="/admin/add-doctor"
         element={

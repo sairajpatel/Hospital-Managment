@@ -1,35 +1,69 @@
-import mongoose from 'mongoose';
-const receptionistSchema=new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
-    },
-    email:{
-        type:String,
-        required:true,
-        unique:true,
-    },
-    password:{
-        type:String,
-        required:true,
-    },
-    phone:{
-        type:String,
-        required:true,
-    },
-    role:{
-        type:String,
-        enum:['doctor','receptionist','patient','nurse','admin'],
-    },
-    patient:{
-        type:Schema.Types.ObjectId,
-        ref:'Patient',
-    },
-    doctor:{
-        type:Schema.Types.ObjectId,
-        ref:'Doctor',
-    },
-   
+const mongoose = require('mongoose');
+
+const receptionistSchema = new mongoose.Schema({
+  firstname: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  lastname: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  country: {
+    type: String,
+    enum: ['USA', 'CAN'],
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  city: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  street: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  flatno: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  pincode: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  role: {
+    type: String,
+    enum: ['receptionist'],
+    default: 'receptionist',
+  },
+}, {
+  timestamps: true,
 });
-export const Receptionist = mongoose.model('Receptionist', receptionistSchema);
- 
+
+module.exports = mongoose.model('Receptionist', receptionistSchema);

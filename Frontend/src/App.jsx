@@ -8,6 +8,7 @@ import DoctorLogin from './Pages/DoctorLogin';
 import DoctorProtectWrapper from './Components/Protectiowrapper/DoctorProtectWrapper';
 import DoctorDashboard from './Pages/DoctorDashboard';
 import AddReceptionist from './Pages/AddReceptionist';
+import ReceptionistProtectWrapper from './Components/Protectiowrapper/ReceptionistProtectWrapper';
 import ReceptionistLogin from './Pages/ReceptionistLogin';
 import ReceptionistDashboard from './Pages/ReceptionistDashboard';
 
@@ -56,7 +57,10 @@ return(
        <Route
       path="/receptionist/dashboard"
       element={
-        <ReceptionistDashboard/>
+        <ReceptionistProtectWrapper>
+          <ReceptionistDashboard/>
+        </ReceptionistProtectWrapper>
+        
 
       }
       />

@@ -7,10 +7,23 @@ import Logout from '../Components/Logout';
 function AdminDashboard() {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
+  const [totalReceptionist,setReceptionist]=useState(0);
+
 
   const [totalDoctors, setTotalDoctors] = useState(0);
 
   useEffect(() => {
+    const fetchReceptionistCount = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/receptionist/total-receptionist`, {
+          withCredentials: true
+        });
+        setReceptionist(res.data.totalReceptionist || 0);
+      } catch (err) {
+        console.error("Failed to fetch receptionist count:", err);
+      }
+    };
+
     const fetchDoctorCount = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/doctor/total-doctor`, {
@@ -23,6 +36,7 @@ function AdminDashboard() {
     };
 
     fetchDoctorCount();
+    fetchReceptionistCount();
   }, []);
 
   return (
@@ -69,7 +83,7 @@ function AdminDashboard() {
           />
           <Card
             title="Receptionists"
-            value="5"
+            value={totalReceptionist}
             buttonText="Add Receptionist"
             onClick={() => navigate('/admin/add-receptionist')}
             color="text-purple-600"

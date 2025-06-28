@@ -1,45 +1,45 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { loginSuccess } from "../redux/slices/authSlice";
+import axios from "axios";
 
-function DoctorLogin() {
+function ReceptionistLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [error, setErrror] = useState("");
   const loginHandler = async (e) => {
     e.preventDefault();
-    setErrror("");
+    setError("");
     try {
       const loginresponse = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/doctor/login`,
+        `${import.meta.env.VITE_BASE_URL}/receptionist/login`,
         { email, password },
-        { withCredentials: true }
+        {withCredentials:true}
       );
       if (loginresponse.status === 200) {
         const profileResponse = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/doctor/profile`,
-          { withCredentials: true }
+          `${import.meta.env.VITE_BASE_URL}/receptionist/profile`,
+          {withCredentials:true}
         );
         dispatch(loginSuccess(profileResponse.data));
-        console.log(profileResponse.data);
-        navigate("/doctor/dashboard");
+        navigate("/receptionist/dashboard");
+       
       }
+    
     } catch (error) {
-      console.log(error.response);
-      if (error.response?.data?.errors) {
-        setErrror(error.response.data.errors[0]?.msg);
-      } else if (error.response?.data?.message) {
-        setErrror(error.response.data.message);
+      if (error.resposnse?.data?.errors) {
+        setError(error.resposnse.data.errors[0]?.msg);
+      } else if (error.resposnse?.data?.message) {
+        setError(error.resposnse.data.message);
       } else {
-        setErrror("Login failed. Please try again!");
+        setError("Login failed. please try again!");
+        console.log(error);
       }
     }
   };
-
   return (
     <div className="flex items-center justify-center flex-col">
       <img
@@ -48,7 +48,7 @@ function DoctorLogin() {
         alt="Logo"
       />
 
-      <h2 className=" text-2xl font-semibold">Doctor login portoal</h2>
+      <h2 className=" text-2xl font-semibold">Receptionsit login portoal</h2>
 
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
         <form onSubmit={loginHandler}>
@@ -66,7 +66,7 @@ function DoctorLogin() {
                 setEmail(e.target.value);
               }}
               className="w-full pl-10 pr-3 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              placeholder="doctor@hospital.com"
+              placeholder="receptionist@hospital.com"
             />
           </div>
           <div className="relative mt-10">
@@ -97,4 +97,4 @@ function DoctorLogin() {
   );
 }
 
-export default DoctorLogin;
+export default ReceptionistLogin;

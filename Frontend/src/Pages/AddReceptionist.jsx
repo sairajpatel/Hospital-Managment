@@ -1,72 +1,58 @@
 import React, { useState } from "react";
-import "remixicon/fonts/remixicon.css";
 import axios from "axios";
 import { useNavigate } from "react-router";
 
-function AddDoctor() {
-  const [specialization, setSpecialization] = useState("");
-  const specializations = [
-    "Cardiology",
-    "Dermatology",
-    "Neurology",
-    "Pediatrics",
-    "Orthopedics",
-    "Oncology",
-    "Radiology",
-    "Psychiatry",
-  ];
+function AddReceptionist() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
-  const [experience, setExperience] = useState("");
-  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
-  const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
+  const [street, setStreet] = useState("");
   const [flatno, setFlatno] = useState("");
-  const [password, setPassword] = useState("");
-  const [pincode, setPincode] = useState("");
-  const navigate = useNavigate();
+  const [pincode, Setpincode] = useState("");
   const [errors, setError] = useState("");
+  const navigate = useNavigate();
 
-  const submithandler = async (e) => {
-    e.preventDefault();
-    try {
+  const submithandler = async () => {
+    try{
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/admin/add-doctor`,
-        {
-          firstname,
-          lastname,
-          email,
-          password,
-          phone,
-          country,
-          state,
-          city,
-          street,
-          pincode,
-          flatno,
-          specialization,
-          experience,
-        },
-        {withCredentials:true}
-      );
-      if(response.status===200){
-        navigate('/admin-dashboard')
-      }
-    } catch (error) {
-       
-      if (error.response?.data?.errors) {
+      `${import.meta.env.VITE_BASE_URL}/admin/add-receptionist`,{
+        firstname,
+        lastname,
+        email,
+        password,
+        phone,
+        country,
+        state,
+        city,
+        street,
+        pincode,
+        flatno,
+        
+      },
+      {withCredentials:true}
+    );
+    if(response.status===200){
+      navigate('/admin-dashboard')
+    }
+    }
+    catch(error){
+      if(error.response?.data?.errors){
         setError(error.response.data.errors[0]?.msg);
-      } else if (error.response?.data?.message) {
+      }
+      else if(error.response?.data?.message){
         setError(error.response.data.message);
-      } else {
-        setError("Login failed. Please try again!");
+      }
+      else{
+        setError("Login Failed. please try again!");
       }
     }
+    
   };
-
   return (
     <div className="h-screen w-50">
       <div className="flex items-center gap-4">
@@ -82,7 +68,7 @@ function AddDoctor() {
         <div
           className="absolute inset-0 bg-cover bg-center object-cover"
           style={{
-            backgroundImage: `url('https://readdy.ai/api/search-image?query=Professional%20medical%20environment%20with%20doctors%20in%20white%20coats%20working%20in%20a%20modern%20hospital%20setting%20with%20blue%20accents%20and%20medical%20equipment%2C%20clean%20clinical%20environment%2C%20soft%20lighting%2C%20professional%20atmosphere&width=1440&height=400&seq=1&orientation=landscape')`,
+            backgroundImage: `url('https://media.istockphoto.com/id/1501183871/photo/doctors-registering-patients-at-the-hospital.jpg?s=612x612&w=0&k=20&c=mnjpoSNO69dNWp11zMmbmMx5S0ch4cG_d-8sMvKzKwI=')`,
             opacity: 0.3,
           }}
         ></div>
@@ -92,18 +78,18 @@ function AddDoctor() {
           </h2>
           <p className="text-xl text-white max-w-2xl">
             Complete the registration form below to become a certified
-            WebDoctor. Your information will be verified to ensure the highest
-            standards of care.
+            Receptionist. Your information will be verified to ensure the
+            highest standards of care.
           </p>
         </div>
       </div>
       <div className="bg-blue-100 border-2 p-5">
-        <h2 className="text-xl font-bold">Doctor Registration Form</h2>
+        <h2 className="text-xl font-bold">Receptionist Registration Form</h2>
       </div>
       <form onSubmit={submithandler}>
         {errors && (
-            <p className="bg-red-100 text-red-700 p-2 rounded mb-4">{errors}</p>
-          )}
+          <p className="bg-red-100 text-red-700 p-2 rounded mb-4">{errors}</p>
+        )}
         <div className="p-5">
           <div className="flex items-center gap-2 ">
             <i className="text-blue-400 text-xl ri-user-fill"></i>
@@ -129,27 +115,6 @@ function AddDoctor() {
               type="text"
               placeholder="Enter Last Name"
             />
-            <select
-              className="p-2 border-2 bg-[#eee] h-10 rounded-lg w-full text-sm"
-              value={specialization}
-              onChange={(e) => setSpecialization(e.target.value)}
-            >
-              <option value="">Select your specialization</option>
-              {specializations.map((spec) => (
-                <option key={spec} value={spec}>
-                  {spec}
-                </option>
-              ))}
-            </select>
-            <input
-              value={experience}
-              onChange={(e) => {
-                setExperience(e.target.value);
-              }}
-              className="p-5 border-2 bg-[#eee] h-10 rounded-lg "
-              type="number"
-              placeholder="Enter Years of Experience"
-            />
           </div>
         </div>
         <div className="mt-3 p-5">
@@ -169,12 +134,12 @@ function AddDoctor() {
               placeholder="Enter Email Address"
             />
             <input
+              className="p-5 border-2 bg-[#eee] h-10 rounded-lg "
+              type="text"
               value={phone}
               onChange={(e) => {
                 setPhone(e.target.value);
               }}
-              className="p-5 border-2 bg-[#eee] h-10 rounded-lg "
-              type="text"
               placeholder="Enter Phone Number"
             />
           </div>
@@ -189,9 +154,7 @@ function AddDoctor() {
             <select
               className="p-2 border-2 bg-[#eee] h-10 rounded-lg w-full text-sm"
               value={country}
-              onChange={(e) => {
-                setCountry(e.target.value);
-              }}
+              onChange={(e) => setCountry(e.target.value)}
             >
               <option value="">Select your Country</option>
               <option value="CAN">CAN</option>
@@ -226,9 +189,7 @@ function AddDoctor() {
             />
             <input
               value={flatno}
-              onChange={(e) => {
-                setFlatno(e.target.value);
-              }}
+              onChange={(e)=>{setFlatno(e.target.value)}}
               className="p-5 border-2 bg-[#eee] h-10 rounded-lg "
               type="text"
               placeholder="Enter Your Flat No"
@@ -236,7 +197,7 @@ function AddDoctor() {
             <input
               value={pincode}
               onChange={(e) => {
-                setPincode(e.target.value);
+                Setpincode(e.target.value);
               }}
               className="p-5 border-2 bg-[#eee] h-10 rounded-lg "
               type="text"
@@ -278,4 +239,4 @@ function AddDoctor() {
   );
 }
 
-export default AddDoctor;
+export default AddReceptionist;

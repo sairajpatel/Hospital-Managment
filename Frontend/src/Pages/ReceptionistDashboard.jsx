@@ -16,7 +16,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { logout } from '../redux/slices/authSlice';
 
@@ -238,385 +238,260 @@ export default function ReceptionistDashboard() {
     }
   };
 
-  return (
-    <Box sx={{ display: 'flex', bgcolor: '#f8fafc', minHeight: '100vh' }}>
-      {/* Header */}
-      <AppBar 
-        position="fixed" 
-        elevation={0}
-        sx={{ 
-          zIndex: 1201, 
-          bgcolor: 'rgba(255, 255, 255, 0.8)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)'
-        }}
-      >
-        <Toolbar>
-          <Typography 
-            variant="h5" 
-            sx={{ 
-              flexGrow: 1, 
-              background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              fontWeight: 600
-            }}
-          >
-            HealthFirst Clinic
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Avatar 
-                sx={{ 
-                  bgcolor: '#1e293b',
-                  width: 32,
-                  height: 32
-                }}
-              >
-                S
-              </Avatar>
-              <Typography sx={{ color: '#1e293b', fontWeight: 500 }}>
-                Sarah
-              </Typography>
-            </Box>
-            <IconButton 
-              sx={{ 
-                bgcolor: '#f1f5f9',
-                '&:hover': { bgcolor: '#e2e8f0' }
-              }}
-            >
-              <LogoutIcon onClick={handleLogout} sx={{ color: '#64748b' }} />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
+  const handleAddPatient = () => {
+    navigate('/receptionist/add-patient');
+  };
 
+  return (
+    <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-            background: 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)',
-            color: 'white',
-            borderRight: 'none'
-          },
-        }}
-      >
-        <Box sx={{ pt: 8, pb: 4, px: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, textAlign: 'center', mb: 4 }}>
-            Receptionist Dashboard
-          </Typography>
-          <List>
-            {[
-              { text: 'Dashboard', icon: DashboardIcon },
-              { text: 'Patients', icon: PeopleIcon },
-              { text: 'Appointments', icon: CalendarMonthIcon },
-              { text: 'Reports', icon: AssignmentTurnedInIcon }
-            ].map((item) => (
-              <ListItem
-                button
-                key={item.text}
-                sx={{
-                  mb: 1,
-                  borderRadius: 2,
-                  '&:hover': { 
-                    bgcolor: 'rgba(255, 255, 255, 0.1)',
-                    '& .MuiListItemIcon-root': {
-                      color: 'white'
-                    }
-                  }
-                }}
-              >
-                <ListItemIcon sx={{ color: '#94a3b8', minWidth: 40, transition: 'color 0.2s' }}>
-                  <item.icon />
-                </ListItemIcon>
-                <ListItemText 
-                  primary={item.text} 
-                  sx={{ 
-                    '& .MuiListItemText-primary': {
-                      fontWeight: 500,
-                      fontSize: '0.95rem'
-                    }
-                  }} 
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      </Drawer>
+      <div className="w-64 bg-[#1e293b] text-white">
+        <div className="p-6">
+          <h1 className="text-xl font-semibold mb-8">Receptionist Dashboard</h1>
+          <nav className="space-y-4">
+            <a href="#" className="flex items-center space-x-2 text-gray-300 hover:text-white">
+              <i className="ri-dashboard-line text-xl"></i>
+              <span>Dashboard</span>
+            </a>
+            <a href="#" className="flex items-center space-x-2 text-gray-300 hover:text-white">
+              <i className="ri-user-line text-xl"></i>
+              <span>Patients</span>
+            </a>
+            <a href="#" className="flex items-center space-x-2 text-gray-300 hover:text-white">
+              <i className="ri-calendar-line text-xl"></i>
+              <span>Appointments</span>
+            </a>
+            <a href="#" className="flex items-center space-x-2 text-gray-300 hover:text-white">
+              <i className="ri-file-list-line text-xl"></i>
+              <span>Reports</span>
+            </a>
+          </nav>
+        </div>
+      </div>
 
       {/* Main Content */}
-      <Box component="main" sx={{ flexGrow: 1, p: 4, ml: `${drawerWidth}px` }}>
-        <Toolbar />
-        
-        {/* Statistics */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          {stats.map((stat, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Paper 
-                elevation={0} 
-                sx={{ 
-                  p: 3,
-                  borderRadius: 4,
-                  bgcolor: 'white',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-                }}
-              >
-                <Box sx={{ position: 'relative', zIndex: 1 }}>
-                  <Box 
-                    sx={{ 
-                      width: 48,
-                      height: 48,
-                      borderRadius: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bgcolor: stat.color,
-                      mb: 2
-                    }}
-                  >
-                    <stat.icon sx={{ color: 'white', fontSize: 24 }} />
-                  </Box>
-                  <Typography sx={{ color: '#64748b', mb: 1, fontSize: '0.875rem' }}>
-                    {stat.title}
-                  </Typography>
-                  <Typography variant="h3" sx={{ color: '#1e293b', fontWeight: 600 }}>
-                    {stat.value}
-                  </Typography>
-                </Box>
-                <Box 
-                  sx={{ 
-                    position: 'absolute',
-                    top: 0,
-                    right: 0,
-                    width: '30%',
-                    height: '100%',
-                    background: `linear-gradient(135deg, ${stat.color}15 0%, ${stat.color}05 100%)`,
-                    borderLeft: `1px solid ${stat.color}10`
-                  }} 
-                />
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
+      <div className="flex-1 overflow-auto">
+        {/* Header */}
+        <header className="bg-white border-b border-gray-200 px-6 py-3">
+          <div className="flex justify-between items-center">
+            <h1 className="text-xl font-semibold text-gray-800">HealthFirst Clinic</h1>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white">
+                  S
+                </div>
+                <span className="text-gray-700">Sarah</span>
+              </div>
+              <button onClick={handleLogout} className="text-gray-600 hover:text-gray-800">
+                <i className="ri-logout-box-line text-xl"></i>
+              </button>
+            </div>
+          </div>
+        </header>
 
-        {/* Today's Schedule */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" sx={{ color: '#1e293b', fontWeight: 600, mb: 3 }}>
-            Today's Schedule
-          </Typography>
-          <Grid container spacing={2}>
-            {todayAppointments.map((apt, index) => {
-              const statusStyle = getStatusStyle(apt.status);
-              return (
-                <Grid item xs={12} sm={6} md={4} key={index}>
-                  <Paper
-                    elevation={0}
-                    sx={{
-                      p: 3,
-                      borderRadius: 4,
-                      bgcolor: 'white',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                      transition: 'transform 0.2s',
-                      '&:hover': {
-                        transform: 'translateY(-2px)'
-                      }
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                      <Avatar sx={{ bgcolor: getRandomGradient() }}>
-                        {apt.avatar}
-                      </Avatar>
-                      <Box>
-                        <Typography sx={{ color: '#1e293b', fontWeight: 600 }}>
-                          {apt.patient}
-                        </Typography>
-                        <Typography sx={{ color: '#64748b', fontSize: '0.875rem' }}>
-                          {apt.time}
-                        </Typography>
-                      </Box>
-                    </Box>
-                    <Typography
-                      sx={{
-                        px: 2,
-                        py: 1,
-                        borderRadius: 2,
-                        fontSize: '0.75rem',
-                        color: statusStyle.color,
-                        bgcolor: statusStyle.bg,
-                        display: 'inline-block'
-                      }}
-                    >
-                      {apt.status}
-                    </Typography>
-                  </Paper>
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Box>
+        {/* Main Content Area */}
+        <div className="p-6">
+          {/* Search and Add Patient */}
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="flex-1 relative">
+              <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input
+                type="text"
+                placeholder="Search patients by name or contact..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <button
+              onClick={handleAddPatient}
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <i className="ri-user-add-line"></i>
+              <span>ADD PATIENT</span>
+            </button>
+          </div>
 
-        {/* Search Bar */}
-        <Box sx={{ mb: 4, display: 'flex', gap: 2 }}>
-          <TextField
-            fullWidth
-            placeholder="Search patients by name or contact..."
-            value={searchTerm}
-            onChange={handleSearch}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 3,
-                bgcolor: 'white',
-                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-                '& fieldset': {
-                  borderColor: '#e2e8f0'
-                },
-                '&:hover fieldset': {
-                  borderColor: '#cbd5e1'
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#3b82f6'
-                }
-              }
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: '#94a3b8' }} />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Button
-            variant="contained"
-            startIcon={<PersonAddIcon />}
-            sx={{
-              borderRadius: 3,
-              px: 4,
-              background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-              boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.2), 0 2px 4px -1px rgba(59, 130, 246, 0.1)',
-              '&:hover': {
-                background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)'
-              }
-            }}
-          >
-            Add Patient
-          </Button>
-        </Box>
+          {/* Statistics Cards */}
+          <div className="grid grid-cols-4 gap-6 mb-8">
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4">
+                <i className="ri-calendar-line text-2xl text-blue-600"></i>
+              </div>
+              <h3 className="text-gray-600 text-sm mb-2">Total Appointments</h3>
+              <p className="text-4xl font-semibold text-gray-900">45</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="w-12 h-12 bg-rose-50 rounded-lg flex items-center justify-center mb-4">
+                <i className="ri-time-line text-2xl text-rose-600"></i>
+              </div>
+              <h3 className="text-gray-600 text-sm mb-2">Pending Requests</h3>
+              <p className="text-4xl font-semibold text-gray-900">12</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center mb-4">
+                <i className="ri-calendar-check-line text-2xl text-emerald-600"></i>
+              </div>
+              <h3 className="text-gray-600 text-sm mb-2">Today's Appointments</h3>
+              <p className="text-4xl font-semibold text-gray-900">8</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center mb-4">
+                <i className="ri-user-line text-2xl text-amber-600"></i>
+              </div>
+              <h3 className="text-gray-600 text-sm mb-2">Registered Patients</h3>
+              <p className="text-4xl font-semibold text-gray-900">156</p>
+            </div>
+          </div>
 
-        {/* Patient List */}
-        <Box>
-          <Typography variant="h6" sx={{ color: '#1e293b', fontWeight: 600, mb: 3 }}>
-            Recent Patient Requests
-          </Typography>
-          <Grid container spacing={2}>
-            {patients.map((patient) => {
-              const statusStyle = getStatusStyle(patient.status);
-              return (
-                <Grid item xs={12} sm={6} md={4} key={patient.id}>
-                  <Paper
-                    elevation={0}
-                    sx={{
-                      borderRadius: 4,
-                      bgcolor: 'white',
-                      overflow: 'hidden',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                    }}
-                  >
-                    <Box sx={{ 
-                      p: 2, 
-                      background: getHeaderColor(patient.status),
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 2
-                    }}>
-                      <Avatar sx={{ bgcolor: 'white' }}>
-                        <Typography sx={{ color: '#1e293b' }}>
-                          {patient.avatar}
-                        </Typography>
-                      </Avatar>
-                      <Typography sx={{ color: 'white', fontWeight: 500 }}>
-                        {patient.name}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ p: 3 }}>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
-                          <Typography variant="caption" sx={{ color: '#64748b', display: 'block' }}>
-                            Doctor
-                          </Typography>
-                          <Typography sx={{ color: '#1e293b' }}>
-                            {patient.doctor}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <Typography variant="caption" sx={{ color: '#64748b', display: 'block' }}>
-                            Department
-                          </Typography>
-                          <Typography sx={{ color: '#1e293b' }}>
-                            {patient.department}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <Typography variant="caption" sx={{ color: '#64748b', display: 'block' }}>
-                            Appointment
-                          </Typography>
-                          <Typography sx={{ color: '#1e293b' }}>
-                            {patient.appointmentTime}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <Typography variant="caption" sx={{ color: '#64748b', display: 'block' }}>
-                            Contact
-                          </Typography>
-                          <Typography sx={{ color: '#1e293b' }}>
-                            {patient.contact}
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3 }}>
-                        <Typography
-                          sx={{
-                            px: 2,
-                            py: 1,
-                            borderRadius: 2,
-                            fontSize: '0.875rem',
-                            color: statusStyle.color,
-                            bgcolor: statusStyle.bg,
-                            display: 'inline-block'
-                          }}
-                        >
-                          {patient.status}
-                        </Typography>
-                        <Button
-                          variant="contained"
-                          onClick={() => handleOpenDialog(patient)}
-                          sx={{
-                            bgcolor: '#1976D2',
-                            '&:hover': { bgcolor: '#1565C0' },
-                            textTransform: 'uppercase',
-                            px: 3,
-                            py: 1,
-                            borderRadius: 1
-                          }}
-                        >
-                          MANAGE
-                        </Button>
-                      </Box>
-                    </Box>
-                  </Paper>
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Box>
-      </Box>
+          {/* Today's Schedule */}
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Today's Schedule</h2>
+          <div className="grid grid-cols-3 gap-6 mb-8">
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-600">
+                  JD
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-900">John Doe</h3>
+                  <p className="text-sm text-gray-500">09:00 AM</p>
+                </div>
+              </div>
+              <div className="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm font-medium">
+                Completed
+              </div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-600">
+                  CH
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-900">Chloe Harris</h3>
+                  <p className="text-sm text-gray-500">10:00 AM</p>
+                </div>
+              </div>
+              <div className="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
+                Waiting
+              </div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-600">
+                  NF
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-900">Noah Foster</h3>
+                  <p className="text-sm text-gray-500">11:30 AM</p>
+                </div>
+              </div>
+              <div className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                Scheduled
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Patient Requests */}
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Patient Requests</h2>
+          <div className="space-y-4">
+            <div className="bg-gradient-to-r from-emerald-500 to-green-500 text-white p-6 rounded-lg shadow-md">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-medium">
+                    CH
+                  </div>
+                  <h3 className="font-medium text-lg">Chloe Harris</h3>
+                </div>
+                <button className="px-4 py-2 bg-white text-emerald-700 rounded-lg hover:bg-white/90 transition-colors font-medium">
+                  MANAGE
+                </button>
+              </div>
+              <div className="grid grid-cols-4 gap-6">
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Doctor</p>
+                  <p className="font-medium">Dr. Smith</p>
+                </div>
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Department</p>
+                  <p className="font-medium">Cardiology</p>
+                </div>
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Appointment</p>
+                  <p className="font-medium">10:00 AM</p>
+                </div>
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Contact</p>
+                  <p className="font-medium">+1 234-567-8900</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white p-6 rounded-lg shadow-md">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-medium">
+                    NF
+                  </div>
+                  <h3 className="font-medium text-lg">Noah Foster</h3>
+                </div>
+                <button className="px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-white/90 transition-colors font-medium">
+                  MANAGE
+                </button>
+              </div>
+              <div className="grid grid-cols-4 gap-6">
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Doctor</p>
+                  <p className="font-medium">Dr. Johnson</p>
+                </div>
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Department</p>
+                  <p className="font-medium">Neurology</p>
+                </div>
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Appointment</p>
+                  <p className="font-medium">11:30 AM</p>
+                </div>
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Contact</p>
+                  <p className="font-medium">+1 234-567-8901</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-violet-500 to-purple-500 text-white p-6 rounded-lg shadow-md">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-medium">
+                    EW
+                  </div>
+                  <h3 className="font-medium text-lg">Emma Wilson</h3>
+                </div>
+                <button className="px-4 py-2 bg-white text-violet-700 rounded-lg hover:bg-white/90 transition-colors font-medium">
+                  MANAGE
+                </button>
+              </div>
+              <div className="grid grid-cols-4 gap-6">
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Doctor</p>
+                  <p className="font-medium">Dr. Davis</p>
+                </div>
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Department</p>
+                  <p className="font-medium">Orthopedics</p>
+                </div>
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Appointment</p>
+                  <p className="font-medium">2:30 PM</p>
+                </div>
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Contact</p>
+                  <p className="font-medium">+1 234-567-8902</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Add this Dialog component before the closing Box tag */}
       <Dialog 
@@ -783,6 +658,6 @@ export default function ReceptionistDashboard() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </div>
   );
 }

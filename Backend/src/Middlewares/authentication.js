@@ -4,6 +4,7 @@ const blacklist=require('../models/blacklistToken');
 const doctor=require('../models/Users/doctor');
 const blacklistToken = require('../models/blacklistToken');
 const receptionist=require('../models/Users/receptionist')
+const Patient = require('../models/Users/patient');
 
 module.exports.authAdmin = async (req,res,next)=>{
     const token=req.cookies.token || req.headers.authorization?.split(' ')[1];
@@ -70,3 +71,27 @@ module.exports.authReceptionist=async(req,res,next)=>{
         res.status(400).json({"message":"Unauthorized"});
     }
 }
+module.exports.authPatient = async (req, res, next) => {
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ "message": "Unauthorized" });
+    }
+    
+    const isBlacklist = await blacklistToken.findOne({ token });
+    if (isBlacklist) {
+        return res.status(401).json({ "message": "Unauthorized" });
+    }
+    
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const patient = await Patient.findById(decoded._id);
+        if (!patient) {
+            return res.status(401).json({ "message": "Unauthorized" });
+        }
+        req.patient = patient;
+        return next();
+    } catch (err) {
+        console.log(err);
+        res.status(401).json({ "message": "Unauthorized" });
+    }
+};

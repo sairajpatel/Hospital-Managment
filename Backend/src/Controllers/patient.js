@@ -21,7 +21,7 @@ module.exports.registerByReceptionist = async (req, res) => {
       createdBy: 'Receptionist'
     });
 
-    res.status(201).json({
+    res.status(200).json({
       message: 'Patient basic details registered successfully.',
       patient
     });
@@ -62,3 +62,49 @@ module.exports.completeRegistrationByPatient = async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   };
+module.exports.loginPatient = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const patient = await Patient.findOne({ email }).select('+password');
+    
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    const isComplete = patient.registrationStep === 'complete';
+    if (!isComplete) {
+      return res.status(400).json({ message: "Patient not completed registration" });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, patient.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Invalid password" });
+    }
+
+    const payload = {
+      _id: patient._id,
+      role: 'patient',
+      name: patient.name,
+    }
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.cookie('token', token);
+    return res.status(200).json({ message: "Login successful" });
+  }
+  catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+module.exports.getPatientProfile=async(req,res)=>{
+  try{
+    const patient=await Patient.findById(req.patient._id);
+    if(!patient){
+      return res.status(404).json({message:"Patient not found"});
+    }
+    res.status(200).json({patient});
+  }
+  catch(err){
+    console.error(err);
+    res.status(500).json({message:"Internal server error"});
+  }
+}

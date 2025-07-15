@@ -8,7 +8,8 @@ const flash=require('connect-flash');
 const connectDB = require('./src/db/index.js');
 const cookieParser=require('cookie-parser');
 const admin=require('./src/Routes/adminRoute.js');
-const doctor=require('./src/Routes/doctorRoute.js')
+const doctor=require('./src/Routes/doctorRoute.js');
+const patient=require('./src/Routes/patient.js');  // Added patient routes import
 app.use(express.urlencoded({ extended: true })); // for form data (HTML forms)
 app.use(express.json()); // for JSON data (like from Postman)
 app.use(cookieParser());
@@ -16,7 +17,8 @@ app.use(cookieParser());
 // Updated CORS configuration to allow multiple origins
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://hospital-managment-lzqampp4w-sairajs-projects-0ce2375b.vercel.app'
+  'https://hospital-managment-lzqampp4w-sairajs-projects-0ce2375b.vercel.app',
+  'https://hospital-managment-ruby.vercel.app'
 ];
 
 app.use(cors({
@@ -56,9 +58,9 @@ app.get('/test-session', (req, res) => {
   res.json({ session: req.session });
 });
 app.use('/admin', admin); 
-app.use('/doctor',doctor);
+app.use('/doctor', doctor);
+app.use('/patient', patient);  // Added patient routes mounting
 
-  
 app.listen(process.env.PORT, () => {
     console.log(`localhost:${process.env.PORT}`);
 });

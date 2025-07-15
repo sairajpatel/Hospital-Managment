@@ -20,8 +20,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    sameSite: 'none', // REQUIRED for cross-origin
-    secure: true      // REQUIRED for HTTPS (Vercel)
+    sameSite: 'none',   // for cross-origin
+    secure: true        // required on HTTPS (Vercel)
   }
 }));
 app.use(flash());
@@ -31,7 +31,9 @@ app.use((req, res, next) => {
   res.locals.token = req.session.token || null; // token is available to all views
   next();
 });
-
+app.get('/test-session', (req, res) => {
+  res.json({ session: req.session });
+});
 app.use('/admin', admin); 
 app.use('/doctor',doctor);
 

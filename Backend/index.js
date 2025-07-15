@@ -20,10 +20,11 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true,         // REQUIRED for HTTPS
-    sameSite: 'none'      // REQUIRED for cross-site cookie
+    secure: true,
+    sameSite: 'none'
   }
 }));
+
 app.use(flash());
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success');

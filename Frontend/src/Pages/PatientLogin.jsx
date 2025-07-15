@@ -3,32 +3,68 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { loginSuccess } from "../redux/slices/authSlice";
 import axios from "axios";
+import Cookies from 'js-cookie';
 
 function PatientLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const loginHandler = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
+
     try {
       const loginResponse = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/patient/login`,
         { email, password },
-        { withCredentials: true }
+        { 
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
+
       if (loginResponse.status === 200) {
+        // Store token in cookie
+        const { token, user } = loginResponse.data;
+        Cookies.set('token', token, { 
+          secure: true,
+          sameSite: 'none',
+          expires: 1 // 1 day
+        });
+
+        // Set token in axios default headers for subsequent requests
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+        // Get user profile with the token
         const profileResponse = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/patient/profile`,
-          { withCredentials: true }
+          { 
+            withCredentials: true,
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
         );
-        dispatch(loginSuccess(profileResponse.data));
+
+        // Dispatch login success with combined user data
+        const userData = {
+          ...user,
+          ...profileResponse.data,
+          token
+        };
+        
+        dispatch(loginSuccess(userData));
         navigate("/patient/dashboard");
       }
     } catch (error) {
+      console.error('Login error:', error);
       if (error.response?.data?.errors) {
         setError(error.response.data.errors[0]?.msg);
       } else if (error.response?.data?.message) {
@@ -36,6 +72,8 @@ function PatientLogin() {
       } else {
         setError("Login failed. Please try again!");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,6 +103,7 @@ function PatientLogin() {
               className="w-full pl-10 pr-3 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               placeholder="patient@example.com"
               required
+              disabled={loading}
             />
           </div>
           <div className="relative mb-6">
@@ -78,6 +117,7 @@ function PatientLogin() {
               className="w-full pl-10 pr-3 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               placeholder="Enter Your Password"
               required
+              disabled={loading}
             />
           </div>
           <div className="flex items-center justify-between mb-6">
@@ -86,6 +126,7 @@ function PatientLogin() {
                 type="checkbox"
                 id="remember"
                 className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded"
+                disabled={loading}
               />
               <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
                 Remember me
@@ -97,9 +138,10 @@ function PatientLogin() {
           </div>
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 rounded-lg font-medium hover:from-blue-600 hover:to-teal-600 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 rounded-lg font-medium hover:from-blue-600 hover:to-teal-600 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+            disabled={loading}
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
         <div className="mt-6 text-center">

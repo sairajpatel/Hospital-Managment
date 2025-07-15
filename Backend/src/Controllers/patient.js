@@ -87,25 +87,45 @@ module.exports.loginPatient = async (req, res) => {
       name: patient.name,
     }
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.cookie('token', token);
-    return res.status(200).json({ message: "Login successful" });
+    
+    // Set cookie with secure options
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true, // for HTTPS
+      sameSite: 'none', // for cross-origin
+      maxAge: 3600000 // 1 hour
+    });
+
+    // Send token in response along with user data
+    return res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: patient._id,
+        role: 'patient',
+        name: patient.name
+      }
+    });
   }
   catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
-module.exports.getPatientProfile=async(req,res)=>{
-  try{
-    const patient=await Patient.findById(req.patient._id);
-    if(!patient){
-      return res.status(404).json({message:"Patient not found"});
+module.exports.getPatientProfile = async (req, res) => {
+  try {
+    const patient = await Patient.findById(req.patient._id)
+      .select('-password -__v'); // Exclude sensitive fields
+    
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
     }
-    res.status(200).json({patient});
+    
+    res.status(200).json(patient);
   }
-  catch(err){
+  catch (err) {
     console.error(err);
-    res.status(500).json({message:"Internal server error"});
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 module.exports.logOutPatient=async(req,res)=>{

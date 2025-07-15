@@ -4,6 +4,7 @@ const blacklistToken=require('../models/blacklistToken');
 const bcryptpassword=require('bcrypt');
 const JWT_SECRET=process.env.JWT_SECRET;
 const jwt=require('jsonwebtoken');
+const Appointment = require('../models/appointment');
 module.exports.registerDoctor=async(req,res)=>{
     try{
          const errors=validationResult(req);
@@ -110,3 +111,98 @@ module.exports.totaldoctor = async (req, res) => {
 module.exports.doctorProfile=async(req,res)=>{
    await res.status(200).json(req.doctor);
 }
+
+// New endpoints for doctor dashboard
+module.exports.getAppointmentStats = async (req, res) => {
+  try {
+    const doctorId = req.doctor._id;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const [totalAppointments, pendingRequests, todayAppointments] = await Promise.all([
+      Appointment.countDocuments({ doctor: doctorId }),
+      Appointment.countDocuments({ doctor: doctorId, status: 'waiting' }),
+      Appointment.countDocuments({
+        doctor: doctorId,
+        appointmentDate: { $gte: today, $lt: tomorrow }
+      })
+    ]);
+
+    res.status(200).json({
+      stats: {
+        totalAppointments,
+        pendingRequests,
+        todayAppointments
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching appointment stats:', error);
+    res.status(500).json({ message: 'Error fetching appointment stats' });
+  }
+};
+
+module.exports.getAppointments = async (req, res) => {
+  try {
+    const doctorId = req.doctor._id;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const appointments = await Appointment.find({
+      doctor: doctorId,
+      appointmentDate: { $gte: today, $lt: tomorrow }
+    })
+    .populate('patient', 'firstname lastname email')
+    .sort({ appointmentDate: 1 });
+
+    res.status(200).json({ appointments });
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    res.status(500).json({ message: 'Error fetching appointments' });
+  }
+};
+
+module.exports.getRecentRequests = async (req, res) => {
+  try {
+    const doctorId = req.doctor._id;
+    const requests = await Appointment.find({
+      doctor: doctorId,
+      status: 'waiting'
+    })
+    .populate('patient', 'firstname lastname email')
+    .sort({ createdAt: -1 })
+    .limit(5);
+
+    res.status(200).json({ requests });
+  } catch (error) {
+    console.error('Error fetching recent requests:', error);
+    res.status(500).json({ message: 'Error fetching recent requests' });
+  }
+};
+
+module.exports.updateAppointment = async (req, res) => {
+  try {
+    const { appointmentId, status } = req.body;
+    const doctorId = req.doctor._id;
+
+    const appointment = await Appointment.findOne({
+      _id: appointmentId,
+      doctor: doctorId
+    });
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    appointment.status = status;
+    await appointment.save();
+
+    res.status(200).json({ message: 'Appointment updated successfully', appointment });
+  } catch (error) {
+    console.error('Error updating appointment:', error);
+    res.status(500).json({ message: 'Error updating appointment' });
+  }
+};

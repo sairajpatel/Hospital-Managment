@@ -20,8 +20,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    sameSite: 'none',   // for cross-origin
-    secure: true        // required on HTTPS (Vercel)
+    secure: true,         // REQUIRED for HTTPS
+    sameSite: 'none'      // REQUIRED for cross-site cookie
   }
 }));
 app.use(flash());

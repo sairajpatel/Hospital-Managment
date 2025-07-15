@@ -108,3 +108,13 @@ module.exports.getPatientProfile=async(req,res)=>{
     res.status(500).json({message:"Internal server error"});
   }
 }
+module.exports.logOutPatient=async(req,res)=>{
+      try{
+        res.clearCookie('token');
+        res.status(200).json({message:"Logged out successfully"});
+      }
+      catch(err){
+        console.error(err);
+        res.status(500).json({message:"Internal server error"});
+      }
+}

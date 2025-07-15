@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { logout } from '../redux/slices/authSlice';
+import { useEffect } from 'react';
 
 const drawerWidth = 280;
 
@@ -104,6 +105,7 @@ export default function ReceptionistDashboard() {
   const [patients, setPatients] = useState(mockPatients);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [totaldoctors,setTotalDoctors]=useState(null);
   const [formErrors, setFormErrors] = useState({});
   const [formData, setFormData] = useState({
     name: '',
@@ -226,6 +228,24 @@ export default function ReceptionistDashboard() {
       console.log(err);
     }
   };
+useEffect(() => {
+  const fetchDoctor = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/doctor/total`,
+        { withCredentials: true }
+      );
+      console.log("total", response.data.totaldoctor); // inspect to confirm response shape
+
+      // assuming the backend sends { total: 12 }
+      setTotalDoctors(response.data.totaldoctor);
+    } catch (error) {
+      console.log("Error fetching total doctors:", error);
+    }
+  };
+
+  fetchDoctor();
+}, []);
 
   const handleSubmit = () => {
     if (validateForm()) {
@@ -322,11 +342,11 @@ export default function ReceptionistDashboard() {
               <p className="text-4xl font-semibold text-gray-900">45</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm">
-              <div className="w-12 h-12 bg-rose-50 rounded-lg flex items-center justify-center mb-4">
-                <i className="ri-time-line text-2xl text-rose-600"></i>
+              <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4">
+               <i class="ri-user-fill text-blue-500"></i>
               </div>
-              <h3 className="text-gray-600 text-sm mb-2">Pending Requests</h3>
-              <p className="text-4xl font-semibold text-gray-900">12</p>
+              <h3 className="text-gray-600 text-sm mb-2">Total Doctors</h3>
+              <p className="text-4xl font-semibold text-gray-900">{totaldoctors}</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center mb-4">

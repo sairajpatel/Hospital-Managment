@@ -14,7 +14,10 @@ const patient=require('./src/Routes/patient.js');
 app.use(express.urlencoded({ extended: true })); // for form data (HTML forms)
 app.use(express.json()); // for JSON data (like from Postman)
 app.use(cookieParser());
-app.use(cors({origin:'http://localhost:5173',credentials:true}));
+app.use(cors({
+  origin: process.env.CORS_URL,
+  credentials: true
+}));
 
 connectDB();
 app.use(session({

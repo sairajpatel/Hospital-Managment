@@ -39,6 +39,8 @@ function PatientDashboard() {
       console.error(err);
     }
   };
+  const booknewAppointment=async()=>{
+    }
 
   if (loading) {
     return (
@@ -194,7 +196,7 @@ function PatientDashboard() {
           <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-gray-800">Upcoming Appointments</h2>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" action={booknewAppointment}>
                 Book New Appointment
               </button>
             </div>

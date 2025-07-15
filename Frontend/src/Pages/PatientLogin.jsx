@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { loginSuccess } from "../redux/slices/authSlice";
 import axios from "axios";
-import Cookies from 'js-cookie';
 
 function PatientLogin() {
   const [email, setEmail] = useState("");
@@ -31,13 +30,7 @@ function PatientLogin() {
       );
 
       if (loginResponse.status === 200) {
-        // Store token in cookie
         const { token, user } = loginResponse.data;
-        Cookies.set('token', token, { 
-          secure: true,
-          sameSite: 'none',
-          expires: 1 // 1 day
-        });
 
         // Set token in axios default headers for subsequent requests
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -46,18 +39,14 @@ function PatientLogin() {
         const profileResponse = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/patient/profile`,
           { 
-            withCredentials: true,
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+            withCredentials: true
           }
         );
 
         // Dispatch login success with combined user data
         const userData = {
           ...user,
-          ...profileResponse.data,
-          token
+          ...profileResponse.data
         };
         
         dispatch(loginSuccess(userData));

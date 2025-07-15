@@ -45,24 +45,53 @@ catch{
 }
 }   
 module.exports.loginDoctor=async(req,res)=>{
-    try{
-        const errors=validationResult(req);
-        if(!errors.isEmpty()){
-            return res.status(400).json({errors:errors.array()});
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Validation failed',
+                errors: errors.array()
+            });
+        }
 
+        const { email, password } = req.body;
+
+        // Check if email and password are provided
+        if (!email || !password) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Email and password are required'
+            });
         }
-        let{email,password}=req.body;
-        let findDoctor=await doctorModel.findOne({email});
-        if(!findDoctor){
-            return res.status(400).json({"mesaage":"Doctor not found!"});
+
+        // Find doctor and select password field
+        const doctor = await doctorModel.findOne({ email }).select('+password');
+        if (!doctor) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Doctor not found'
+            });
         }
-        const isMatch=await bcryptpassword.compare(password,findDoctor.password);
-        if(!isMatch){
-            return res.status(400).json({"message":"Invalid email or password"});
-            
+
+        // Verify password
+        const isPasswordValid = await bcryptpassword.compare(password, doctor.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({
+                status: 'error',
+                message: 'Invalid credentials'
+            });
         }
-        const payload={_id:findDoctor.id,role:findDoctor.role,name:findDoctor.firstname};
-        const token=jwt.sign(payload,JWT_SECRET,{expiresIn:'1h'});
+
+        // Create token payload
+        const payload = {
+            _id: doctor._id,
+            role: doctor.role,
+            name: doctor.firstname
+        };
+
+        // Sign token
+        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
         
         // Set cookie with secure options
         res.cookie('token', token, {
@@ -72,19 +101,24 @@ module.exports.loginDoctor=async(req,res)=>{
             maxAge: 3600000 // 1 hour
         });
         
-        // Send token in response along with user data
+        // Send success response
         return res.status(200).json({
-            message: "successfully login",
+            status: 'success',
+            message: 'Login successful',
             token,
             user: {
-                id: findDoctor.id,
-                role: findDoctor.role,
-                name: findDoctor.firstname
+                id: doctor._id,
+                role: doctor.role,
+                name: doctor.firstname,
+                email: doctor.email
             }
         });
-    }
-    catch(err){
-     return res.status(400).json({"message":"something went wrong"});
+    } catch (error) {
+        console.error('Login error:', error);
+        return res.status(500).json({
+            status: 'error',
+            message: 'Internal server error'
+        });
     }
 }
 module.exports.LogoutDoctor=async(req,res)=>{

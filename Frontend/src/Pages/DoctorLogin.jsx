@@ -3,6 +3,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { loginSuccess } from "../redux/slices/authSlice";
+import Cookies from 'js-cookie';
 
 function DoctorLogin() {
   const [email, setEmail] = useState("");
@@ -10,26 +11,60 @@ function DoctorLogin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setErrror] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const loginHandler = async (e) => {
     e.preventDefault();
     setErrror("");
+    setLoading(true);
+    
     try {
-      const loginresponse = await axios.post(
+      const loginResponse = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/doctor/login`,
         { email, password },
-        { withCredentials: true }
+        { 
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
-      if (loginresponse.status === 200) {
+
+      if (loginResponse.status === 200) {
+        // Store token in cookie
+        const { token, user } = loginResponse.data;
+        Cookies.set('token', token, { 
+          secure: true,
+          sameSite: 'none',
+          expires: 1 // 1 day
+        });
+
+        // Set token in axios default headers for subsequent requests
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+        // Get user profile with the token
         const profileResponse = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/doctor/profile`,
-          { withCredentials: true }
+          { 
+            withCredentials: true,
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
         );
-        dispatch(loginSuccess(profileResponse.data));
-        console.log(profileResponse.data);
+
+        // Dispatch login success with combined user data
+        const userData = {
+          ...user,
+          ...profileResponse.data,
+          token
+        };
+        
+        dispatch(loginSuccess(userData));
         navigate("/doctor/dashboard");
       }
     } catch (error) {
-      console.log(error.response);
+      console.error('Login error:', error);
       if (error.response?.data?.errors) {
         setErrror(error.response.data.errors[0]?.msg);
       } else if (error.response?.data?.message) {
@@ -37,6 +72,8 @@ function DoctorLogin() {
       } else {
         setErrror("Login failed. Please try again!");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,7 +85,7 @@ function DoctorLogin() {
         alt="Logo"
       />
 
-      <h2 className=" text-2xl font-semibold">Doctor login portoal</h2>
+      <h2 className="text-2xl font-semibold">Doctor Login Portal</h2>
 
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
         <form onSubmit={loginHandler}>
@@ -62,11 +99,10 @@ function DoctorLogin() {
             <input
               type="text"
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full pl-10 pr-3 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               placeholder="doctor@hospital.com"
+              disabled={loading}
             />
           </div>
           <div className="relative mt-10">
@@ -76,19 +112,19 @@ function DoctorLogin() {
             <input
               type="password"
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full pl-10 pr-3 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               placeholder="Enter Your Password"
+              disabled={loading}
             />
           </div>
           <div className="mt-10">
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 rounded-lg font-medium hover:from-blue-600 hover:to-teal-600 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 !rounded-button whitespace-nowrap cursor-pointer"
+              className="w-full bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 rounded-lg font-medium hover:from-blue-600 hover:to-teal-600 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 !rounded-button whitespace-nowrap cursor-pointer disabled:opacity-50"
+              disabled={loading}
             >
-              Login
+              {loading ? 'Logging in...' : 'Login'}
             </button>
           </div>
         </form>

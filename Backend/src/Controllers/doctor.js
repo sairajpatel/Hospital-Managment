@@ -62,8 +62,25 @@ module.exports.loginDoctor=async(req,res)=>{
         }
         const payload={_id:findDoctor.id,role:findDoctor.role,name:findDoctor.firstname};
         const token=jwt.sign(payload,JWT_SECRET,{expiresIn:'1h'});
-        res.cookie('token',token);
-        return res.status(200).json({"message":"successfully login"});
+        
+        // Set cookie with secure options
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true, // for HTTPS
+            sameSite: 'none', // for cross-origin
+            maxAge: 3600000 // 1 hour
+        });
+        
+        // Send token in response along with user data
+        return res.status(200).json({
+            message: "successfully login",
+            token,
+            user: {
+                id: findDoctor.id,
+                role: findDoctor.role,
+                name: findDoctor.firstname
+            }
+        });
     }
     catch(err){
      return res.status(400).json({"message":"something went wrong"});

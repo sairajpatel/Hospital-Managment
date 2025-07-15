@@ -18,7 +18,8 @@ app.use(cookieParser());
 const allowedOrigins = [
   'http://localhost:5173',
   'https://hospital-managment-lzqampp4w-sairajs-projects-0ce2375b.vercel.app',
-  'https://hospital-managment-ruby.vercel.app'
+  'https://hospital-managment-ruby.vercel.app',
+  'https://hospital-managment-mq6t-6fgv2a2eu-sairajs-projects-0ce2375b.vercel.app/'
 ];
 
 app.use(cors({

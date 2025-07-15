@@ -23,9 +23,19 @@ function DoctorDashboard() {
         setLoading(true);
         setError(null);
 
-        // Add base URL to axios requests
-        const baseURL = '/api/doctor';
+        // Configure axios with the base URL and default headers
+        const baseURL = 'https://hospital-managment-ruby.vercel.app';
+        const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
         
+        const axiosConfig = {
+          baseURL,
+          withCredentials: true,
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json',
+          }
+        };
+
         // Add request interceptor for debugging
         axios.interceptors.request.use(request => {
           console.log('Starting Request:', request);
@@ -42,9 +52,9 @@ function DoctorDashboard() {
         });
 
         const [statsRes, appointmentsRes, requestsRes] = await Promise.all([
-          axios.get(`${baseURL}/appointment-stats`),
-          axios.get(`${baseURL}/appointments`),
-          axios.get(`${baseURL}/recent-requests`)
+          axios.get(`${baseURL}/doctor/appointment-stats`, axiosConfig),
+          axios.get(`${baseURL}/doctor/appointments`, axiosConfig),
+          axios.get(`${baseURL}/doctor/recent-requests`, axiosConfig)
         ]);
 
         console.log('Stats Response:', statsRes.data);

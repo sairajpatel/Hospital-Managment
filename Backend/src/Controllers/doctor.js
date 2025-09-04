@@ -95,9 +95,9 @@ module.exports.loginDoctor=async(req,res)=>{
         
         // Set cookie with secure options
         res.cookie('token', token, {
-            httpOnly: true,
-            secure: true, // for HTTPS
-            sameSite: 'none', // for cross-origin
+            httpOnly: false,
+            secure: false, // for HTTPS
+            sameSite: 'lax', // for cross-origin
             maxAge: 3600000 // 1 hour
         });
         

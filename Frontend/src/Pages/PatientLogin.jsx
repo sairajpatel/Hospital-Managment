@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { loginSuccess } from "../redux/slices/authSlice";
@@ -28,8 +28,8 @@ function PatientLogin() {
           }
         }
       );
-
-      if (loginResponse.status === 200) {
+            if (loginResponse.status === 200) {
+              console.log("first if executed")
         const { token, user } = loginResponse.data;
 
         // Set token in axios default headers for subsequent requests
@@ -48,10 +48,14 @@ function PatientLogin() {
           ...user,
           ...profileResponse.data
         };
+        console.log(userData);
         
         dispatch(loginSuccess(userData));
         navigate("/patient/dashboard");
       }
+      
+
+   
     } catch (error) {
       console.error('Login error:', error);
       if (error.response?.data?.errors) {

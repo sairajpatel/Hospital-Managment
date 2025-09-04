@@ -90,10 +90,10 @@ module.exports.loginPatient = async (req, res) => {
     
     // Set cookie with secure options
     res.cookie('token', token, {
-      httpOnly: true,
-      secure: true, // for HTTPS
-      sameSite: 'none', // for cross-origin
-      maxAge: 3600000 // 1 hour
+           httpOnly: false,
+            secure: false, // for HTTPS
+            sameSite: 'lax', // for cross-origin
+            maxAge: 3600000 // 1 hour
     });
 
     // Send token in response along with user data
@@ -113,20 +113,8 @@ module.exports.loginPatient = async (req, res) => {
   }
 };
 module.exports.getPatientProfile = async (req, res) => {
-  try {
-    const patient = await Patient.findById(req.patient._id)
-      .select('-password -__v'); // Exclude sensitive fields
-    
-    if (!patient) {
-      return res.status(404).json({ message: "Patient not found" });
-    }
-    
-    res.status(200).json(patient);
-  }
-  catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Internal server error" });
-  }
+ await res.status(200).json(req.patient);
+
 }
 module.exports.logOutPatient=async(req,res)=>{
       try{

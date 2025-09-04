@@ -24,7 +24,7 @@ function DoctorDashboard() {
         setError(null);
 
         // Configure axios with the base URL and default headers
-        const baseURL = 'https://hospital-managment-ruby.vercel.app';
+        const baseURL = `${import.meta.env.VITE_BASE_URL}`;
         const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
         
         const axiosConfig = {
@@ -94,11 +94,11 @@ function DoctorDashboard() {
   const handleStatusUpdate = async (appointmentId, newStatus) => {
     try {
       setError(null);
-      const baseURL = '/api/doctor';
+      const baseURL = 'https://hospital-managment-ruby.vercel.app';
       
       console.log('Updating appointment status:', { appointmentId, newStatus });
       
-      const updateRes = await axios.put(`${baseURL}/update-appointment`, {
+      const updateRes = await axios.post(`${baseURL}/doctorSchedule`, {
         appointmentId,
         status: newStatus
       });

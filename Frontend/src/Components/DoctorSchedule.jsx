@@ -22,7 +22,7 @@ const DoctorSchedule = ({ onClose }) => {
   const fetchSchedule = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/doctor/schedule');
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/doctor/schedule`);
       if (response.data.doctorSlots) {
         setSchedule(response.data.doctorSlots.availableSlots || []);
         // Set initial selected slots for the first day
@@ -65,7 +65,7 @@ const DoctorSchedule = ({ onClose }) => {
         updatedSchedule.push({ day: selectedDay, slots: selectedSlots });
       }
 
-      await axios.post('/api/doctor/doctorSchedule', {
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/doctor/doctorSchedule`, {
         availableSlots: updatedSchedule
       });
 

@@ -1,4 +1,4 @@
-const {loginReceptionist,totalReceptionist,LogoutReceptionist,getReceptionsitProfile}=require('../Controllers/receptionsist');
+const {loginReceptionist,totalReceptionist,LogoutReceptionist,getReceptionsitProfile, registerReceptionist}=require('../Controllers/receptionsist');
 const express=require('express');
 const {body}=require('express-validator');
 const authMiddleware=require('../Middlewares/authentication');
@@ -7,7 +7,7 @@ route.post('/login',[
     body("email").isEmail().withMessage("Please Enter valid email")
    
 ],loginReceptionist);
-
+route.post('/register',registerReceptionist);
 route.get('/logout',LogoutReceptionist);
 route.get('/profile',authMiddleware.authReceptionist,getReceptionsitProfile);
 route.get('/total-receptionist',totalReceptionist)

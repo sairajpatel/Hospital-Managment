@@ -40,7 +40,7 @@ function AddPatient() {
       );
 
       if (response.status === 200) {
-        navigate("/receptionist/dashboard");
+        navigate("/patient/dashboard");
       }
     } catch (error) {
       if (error.response?.data?.errors) {

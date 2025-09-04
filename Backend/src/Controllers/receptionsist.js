@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const blacklistToken = require('../models/blacklistToken');
 const JWT_SECRET = process.env.JWT_SECRET;
+require('dotenv').config();
 
 module.exports.registerReceptionist = async (req, res) => {
   try {

@@ -17,45 +17,19 @@ function PatientLogin() {
     setError("");
     setLoading(true);
 
-    try {
-      const loginResponse = await axios.post(
+      try {
+      // 1. send credentials to backend, backend sets HttpOnly cookie
+      await axios.post(
         `${import.meta.env.VITE_BASE_URL}/patient/login`,
         { email, password },
-        { 
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json'
-          }
+        {
+          withCredentials: true, // allows cookie to be stored
+          headers: { "Content-Type": "application/json" },
         }
       );
-            if (loginResponse.status === 200) {
-              console.log("first if executed")
-        const { token, user } = loginResponse.data;
 
-        // Set token in axios default headers for subsequent requests
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-        // Get user profile with the token
-        const profileResponse = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/patient/profile`,
-          { 
-            withCredentials: true
-          }
-        );
-
-        // Dispatch login success with combined user data
-        const userData = {
-          ...user,
-          ...profileResponse.data
-        };
-        console.log(userData);
-        
-        dispatch(loginSuccess(userData));
-        navigate("/patient/dashboard");
-      }
-      
-
-   
+      // 2. after successful login, go to dashboard
+      navigate("/patient/dashboard");
     } catch (error) {
       console.error('Login error:', error);
       if (error.response?.data?.errors) {

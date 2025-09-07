@@ -2,6 +2,7 @@ const Patient = require('../models/Users/patient.js');
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
 const mongoose=require('mongoose');
+const doctorSchedule=require('../models/doctorSchedule.js');
 module.exports.registerByReceptionist = async (req, res) => {
   try {
     const {
@@ -90,7 +91,7 @@ module.exports.loginPatient = async (req, res) => {
     
     // Set cookie with secure options
     res.cookie('token', token, {
-           httpOnly: false,
+           httpOnly: true,
             secure: false, // for HTTPS
             sameSite: 'lax', // for cross-origin
             maxAge: 3600000 // 1 hour
@@ -113,9 +114,8 @@ module.exports.loginPatient = async (req, res) => {
   }
 };
 module.exports.getPatientProfile = async (req, res) => {
- await res.status(200).json(req.patient);
-
-}
+  res.status(200).json({ patient: req.patient });
+};
 module.exports.logOutPatient=async(req,res)=>{
       try{
         res.clearCookie('token');
@@ -125,4 +125,13 @@ module.exports.logOutPatient=async(req,res)=>{
         console.error(err);
         res.status(500).json({message:"Internal server error"});
       }
+}
+module.exports.doctorSchedule=async(req,res)=>{
+   try{
+const schedules=await doctorSchedule.find().populate('doctor','firstname lastname');
+res.status(200).json({schedules});
+   }
+   catch(err){
+    console.log(err);
+   }
 }

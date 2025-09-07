@@ -15,6 +15,7 @@ import AdminProtectWrapper from "./Components/Protectiowrapper/AdminProtectWrapp
 import DoctorProtectWrapper from "./Components/Protectiowrapper/DoctorProtectWrapper";
 import ReceptionistProtectWrapper from "./Components/Protectiowrapper/ReceptionistProtectWrapper";
 import PatientProtectWrapper from "./Components/Protectiowrapper/PatientProtectWrapper";
+import Book from "./Pages/Appointment/Book";
 
 function App() {
   return (
@@ -83,6 +84,7 @@ function App() {
           </PatientProtectWrapper>
         }
       />
+      <Route path="/book/appointment" element={<Book/>}/>
     </Routes>
   );
 }

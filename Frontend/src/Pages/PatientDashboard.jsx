@@ -40,6 +40,7 @@ function PatientDashboard() {
     }
   };
   const booknewAppointment=async()=>{
+    navigate("/book/appointment");
     }
 
   if (loading) {
@@ -48,7 +49,10 @@ function PatientDashboard() {
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
+
+
   }
+  
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -196,7 +200,7 @@ function PatientDashboard() {
           <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-gray-800">Upcoming Appointments</h2>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" action={booknewAppointment}>
+              <button href="/book/apppointment" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" onClick={booknewAppointment}>
                 Book New Appointment
               </button>
             </div>

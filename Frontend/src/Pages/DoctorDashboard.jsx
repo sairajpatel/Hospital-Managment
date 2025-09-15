@@ -36,21 +36,7 @@ function DoctorDashboard() {
           }
         };
 
-        // Add request interceptor for debugging
-        axios.interceptors.request.use(request => {
-          console.log('Starting Request:', request);
-          return request;
-        });
-
-        // Add response interceptor for debugging
-        axios.interceptors.response.use(response => {
-          console.log('Response:', response);
-          return response;
-        }, error => {
-          console.error('Response Error:', error);
-          return Promise.reject(error);
-        });
-
+      
         const [statsRes, appointmentsRes, requestsRes] = await Promise.all([
           axios.get(`${baseURL}/doctor/appointment-stats`, axiosConfig),
           axios.get(`${baseURL}/doctor/appointments`, axiosConfig),

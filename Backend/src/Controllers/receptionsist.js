@@ -4,6 +4,10 @@ const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const blacklistToken = require('../models/blacklistToken');
 const JWT_SECRET = process.env.JWT_SECRET;
+const Appointment=require('../models/appointment');
+const DoctorSchedule = require('../models/doctorSchedule');
+const appointment = require('../models/appointment');
+
 require('dotenv').config();
 
 module.exports.registerReceptionist = async (req, res) => {
@@ -111,4 +115,53 @@ module.exports.totalReceptionist=async(req,res)=>{
 }
 module.exports.getReceptionsitProfile=async(req,res)=>{
   res.status(200).json(req.receptionist);
+}
+module.exports.getPendingRequests=async(req,res)=>{
+  try{
+ const pendingAppointments=await Appointment.find({status:'pending'}).populate('patient','name email phone').populate('doctor','name specialty');
+ if(!pendingAppointments){
+  return res.status(200).json({message:'No pending appointments',appointments:[]});
+ }
+ return res.status(200).json({
+  message:'Pending appointments retrived successfully',
+  appointments:pendingAppointments
+ })
+  }
+  catch(error){
+    console.error(error);
+
+  }
+}
+module.exports.approveAppointment=async(req,res)=>{
+try{
+ const {AppointmentId}=req.body;
+ const appointment=await Appointment.findById(AppointmentId);
+ if(!appointment){
+  return res.status(400).json({message:'Appointment not found'});
+
+ }
+ if(appointment.status!=='pending'){
+  return res.status(400).json({message:'Appointment already processed'});
+
+ }
+ const doctorSchedule=await DoctorSchedule.findOne({
+  doctor:appointment.doctor
+ });
+ const appointmentDateObj=appointment.appointmentDate;
+ const timeString=appointmentDateObj.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+
+ const dayBlock=doctorSchedule.availableSlots.find(slot=>slot.date&& slot.date.toISOString().split('T')[0]===appointmentDateObj.toISOString().split('T')[0]);
+ if(dayBlock){
+  dayBlock.slots=dayBlock.slots.filter(s=>s!==timeString);
+  await doctorSchedule.save();
+ }
+ appointment.status='scheduled';
+ await appointment.save();
+ return res.json({message:'Appointment Approved',appointment});
+
+}
+catch(err){
+console.error(err);
+res.status(500).json({message:'Error Approving Appointment'});
+}
 }

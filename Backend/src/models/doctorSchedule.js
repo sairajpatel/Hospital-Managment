@@ -5,10 +5,8 @@ const doctorSlotSchema = new mongoose.Schema({
     ref: 'Doctor'
   },
   availableSlots: [{
-    day: {
-      type: String,
-      enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-    },
+  
+    date:Date,
     slots: [{
       type: String  
     }]

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { logout } from '../redux/slices/authSlice';
+import { logout } from '../../redux/slices/authSlice';
+import Navbar from './Navbar';
 
 function PatientDashboard() {
   const navigate = useNavigate();
@@ -55,35 +56,9 @@ function PatientDashboard() {
   
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className=" h-screen bg-gray-50">
       {/* Sidebar */}
-      <div className="w-64 bg-[#1e293b] text-white">
-        <div className="p-6">
-          <h1 className="text-xl font-semibold mb-8">Patient Dashboard</h1>
-          <nav className="space-y-4">
-            <a href="#overview" className="flex items-center space-x-2 text-gray-300 hover:text-white">
-              <i className="ri-dashboard-line text-xl"></i>
-              <span>Overview</span>
-            </a>
-            <a href="#appointments" className="flex items-center space-x-2 text-gray-300 hover:text-white">
-              <i className="ri-calendar-line text-xl"></i>
-              <span>Appointments</span>
-            </a>
-            <a href="#medical-records" className="flex items-center space-x-2 text-gray-300 hover:text-white">
-              <i className="ri-file-list-line text-xl"></i>
-              <span>Medical Records</span>
-            </a>
-            <a href="#prescriptions" className="flex items-center space-x-2 text-gray-300 hover:text-white">
-              <i className="ri-medicine-bottle-line text-xl"></i>
-              <span>Prescriptions</span>
-            </a>
-            <a href="#settings" className="flex items-center space-x-2 text-gray-300 hover:text-white">
-              <i className="ri-settings-line text-xl"></i>
-              <span>Settings</span>
-            </a>
-          </nav>
-        </div>
-      </div>
+<Navbar/>
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto">

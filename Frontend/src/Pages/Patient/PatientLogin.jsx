@@ -1,7 +1,7 @@
 import React, { use, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { loginSuccess } from "../redux/slices/authSlice";
+import { loginSuccess } from "../../redux/slices/authSlice";
 import axios from "axios";
 
 function PatientLogin() {

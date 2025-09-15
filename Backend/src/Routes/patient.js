@@ -1,4 +1,4 @@
-const {registerByReceptionist,completeRegistrationByPatient,loginPatient,getPatientProfile,logOutPatient, doctorSchedule}=require('../Controllers/patient');
+const {registerByReceptionist,completeRegistrationByPatient,loginPatient,getPatientProfile,logOutPatient, doctorSchedule, bookAppointment}=require('../Controllers/patient');
 const express=require('express');
 
 const {authPatient}=require('../Middlewares/authentication');
@@ -10,4 +10,5 @@ route.post('/login',loginPatient);
 route.get('/profile',authPatient,getPatientProfile);
 route.get('/doctorschedule',authPatient,doctorSchedule);
 route.get('/logout',authPatient,logOutPatient);
+route.post('/book/appointment',authPatient,bookAppointment);
 module.exports = route;

@@ -1,22 +1,44 @@
 const DoctorSchedule=require('../models/doctorSchedule');
 
-exports.setDoctorSlots=async(req,res)=>{
-    try{
-        const {availableSlots}=req.body;
-        const doctorId=req.doctor._id;
-        await DoctorSchedule.findOneAndUpdate(
-            {doctor:doctorId},
-            {availableSlots},
-            {upsert:true}
-        );
-        res.status(200).json({message:"Slots updated successfully"});
+exports.setDoctorSlots = async (req, res) => {
+  try {
 
+
+    const { availableSlots } = req.body;
+
+    if (!availableSlots || !Array.isArray(availableSlots)) {
+      return res.status(400).json({ message: 'availableSlots array is required' });
     }
-    catch(error){
-        res.status(500).json({message:"Error updating slots"});
-        console.log(error);
+
+    const doctorId = req.doctor?._id || req.body.doctorId; // fallback if you pass doctorId in body
+
+    if (!doctorId) {
+      return res.status(400).json({ message: 'Doctor ID not provided' });
     }
+
+    // Map date strings to Date objects to match schema
+    const formattedSlots = availableSlots.map(slot => ({
+      day: slot.day,
+      date: slot.date ? new Date(slot.date) : undefined,
+      slots: slot.slots
+    }));
+
+    const updatedSchedule = await DoctorSchedule.findOneAndUpdate(
+      { doctor: doctorId },
+      { $set: { availableSlots: formattedSlots } },
+      { upsert: true, new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      message: 'Slots updated successfully',
+      data: updatedSchedule
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating slots', error: error.message });
+  }
 };
+
 
 exports.getDoctorSchedule = async (req, res) => {
     try {
